@@ -85,43 +85,46 @@
                 </div>
             </div>
 
-            <!-- SECTION 2: BIẾN ĐỔI THAM SỐ (A, B, C, D) -->
-            <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 space-y-3">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">2. Biến đổi Hàm tổng quát</h2>
-                    <button id="btnResetParams" class="text-[11px] text-indigo-400 hover:text-indigo-300 underline">Về mặc định</button>
-                </div>
-                <div id="equationDisplay" class="text-center font-mono text-sm py-1.5 bg-slate-950/80 rounded border border-slate-800 text-indigo-300 font-bold">
-                    y = 1.0·sin(1.0x + 0.0) + 0.0
-                </div>
+           <!-- 2. TÍNH GIÁ TRỊ HÀM SỐ TẠI GÓC X -->
+<div class="bg-slate-800/80 backdrop-blur border border-slate-700/50 rounded-2xl p-5 mb-6 shadow-xl">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-sm font-semibold tracking-wider text-slate-400 uppercase">2. TÍNH GIÁ TRỊ HÀM SỐ</h2>
+    </div>
 
-                <div class="space-y-2 text-xs">
-                    <div>
-                        <div class="flex justify-between text-slate-300 mb-1">
-                            <span>Biên độ (A): <b id="valA" class="text-cyan-400 font-mono">1.0</b></span>
-                        </div>
-                        <input type="range" id="paramA" min="-3" max="3" step="0.1" value="1" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-slate-300 mb-1">
-                            <span>Tần số góc (B): <b id="valB" class="text-cyan-400 font-mono">1.0</b></span>
-                        </div>
-                        <input type="range" id="paramB" min="0.2" max="4" step="0.1" value="1" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-slate-300 mb-1">
-                            <span>Pha ban đầu (C): <b id="valC" class="text-cyan-400 font-mono">0.0</b></span>
-                        </div>
-                        <input type="range" id="paramC" min="-3.14" max="3.14" step="0.1" value="0" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-slate-300 mb-1">
-                            <span>Tịnh tiến tung độ (D): <b id="valD" class="text-cyan-400 font-mono">0.0</b></span>
-                        </div>
-                        <input type="range" id="paramD" min="-3" max="3" step="0.1" value="0" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
-                    </div>
-                </div>
-            </div>
+    <!-- Hiển thị công thức cơ bản -->
+    <div class="bg-slate-900/90 border border-slate-700/60 rounded-xl p-3 mb-4 text-center">
+        <span id="equationDisplay" class="font-mono text-xl font-bold text-cyan-400">y = sin(x)</span>
+    </div>
+
+    <!-- Chọn hoặc Nhập giá trị x -->
+    <div class="space-y-3">
+        <label class="block text-xs font-medium text-slate-300">Nhập hoặc chọn góc x (đơn vị rad):</label>
+        
+        <div class="flex gap-2">
+            <input type="text" id="inputX" value="pi/2" placeholder="VD: pi/2, pi/3, -pi/6, 0"
+                class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-cyan-300 font-mono focus:outline-none focus:border-cyan-500 transition">
+            <button id="btnCalc" class="bg-cyan-600 hover:bg-cyan-500 text-white font-medium px-4 py-2 rounded-lg text-sm transition shadow-lg shadow-cyan-900/40">
+                Tính y
+            </button>
+        </div>
+
+        <!-- Các nút bấm góc đặc biệt nhanh -->
+        <div class="flex flex-wrap gap-1.5 pt-1">
+            <button onclick="setQuickX('0')" class="px-2.5 py-1 text-xs font-mono bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-md transition">0</button>
+            <button onclick="setQuickX('pi/6')" class="px-2.5 py-1 text-xs font-mono bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-md transition">π/6</button>
+            <button onclick="setQuickX('pi/4')" class="px-2.5 py-1 text-xs font-mono bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-md transition">π/4</button>
+            <button onclick="setQuickX('pi/3')" class="px-2.5 py-1 text-xs font-mono bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-md transition">π/3</button>
+            <button onclick="setQuickX('pi/2')" class="px-2.5 py-1 text-xs font-mono bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-md transition">π/2</button>
+            <button onclick="setQuickX('pi')" class="px-2.5 py-1 text-xs font-mono bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-md transition">π</button>
+            <button onclick="setQuickX('-pi/6')" class="px-2.5 py-1 text-xs font-mono bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-md transition">-π/6</button>
+        </div>
+
+        <!-- Khung hiển thị kết quả -->
+        <div id="resultBox" class="mt-3 p-3 bg-slate-900/60 border border-cyan-500/30 rounded-lg text-sm text-slate-200">
+            Kết quả: <span id="calcResult" class="font-bold text-cyan-400 font-mono">y = 1</span>
+        </div>
+    </div>
+</div>
 
             <!-- SECTION 3: CÁC TÙY CHỌN HIỂN THỊ -->
             <div class="space-y-2 text-xs">
