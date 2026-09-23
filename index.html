@@ -590,13 +590,20 @@
 
         // CẬP NHẬT FORMULA DISPLAY
         function updateEquationDisplay() {
-            const aStr = paramA.toFixed(1);
-            const bStr = paramB.toFixed(1);
-            const cStr = paramC >= 0 ? `+ ${paramC.toFixed(1)}` : `- ${Math.abs(paramC).toFixed(1)}`;
-            const dStr = paramD >= 0 ? `+ ${paramD.toFixed(1)}` : `- ${Math.abs(paramD).toFixed(1)}`;
+    // Nếu tất cả ở giá trị mặc định thì hiển thị công thức chuẩn SGK
+    if (paramA === 1 && paramB === 1 && paramC === 0 && paramD === 0) {
+        document.getElementById('equationDisplay').textContent = `y = ${currentFn}(x)`;
+        return;
+    }
 
-            document.getElementById('equationDisplay').textContent = `y = ${aStr}·${currentFn}(${bStr}x ${cStr}) ${dStr}`;
-        }
+    // Ngược lại thì hiển thị biểu thức biến đổi tối giản
+    let aStr = paramA === 1 ? '' : (paramA === -1 ? '-' : `${paramA.toFixed(1)}·`);
+    let bStr = paramB === 1 ? '' : `${paramB.toFixed(1)}`;
+    let cStr = paramC === 0 ? '' : (paramC > 0 ? ` + ${paramC.toFixed(1)}` : ` - ${Math.abs(paramC).toFixed(1)}`);
+    let dStr = paramD === 0 ? '' : (paramD > 0 ? ` + ${paramD.toFixed(1)}` : ` - ${Math.abs(paramD).toFixed(1)}`);
+
+    document.getElementById('equationDisplay').textContent = `y = ${aStr}${currentFn}(${bStr}x${cStr})${dStr}`;
+}
 
         // UPDATE CARD LÝ THUYẾT
         function updateTheoryCard(fnKey) {
