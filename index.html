@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trực quan hóa Hàm số Lượng giác - Toán 11 KNTT</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #f8fafc;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 3px;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        /* Style cho custom slider range */
+        input[type=range] {
+            accent-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden select-none">
+
+    <!-- HEADER -->
+    <header class="h-14 glass-panel border-b border-slate-800 px-6 flex items-center justify-between z-20">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-indigo-600/20 text-indigo-400 rounded-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+            </div>
+            <h1 class="font-bold text-lg tracking-wide text-slate-100 flex items-center gap-2">
+                Trực quan hóa Hàm số Lượng giác 
+                <span class="text-xs px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-medium">Toán 11 KNTT</span>
+            </h1>
+        </div>
+        <div class="flex items-center gap-4 text-xs text-slate-400">
+            <div class="hidden md:flex items-center gap-2">
+                <span class="bg-slate-800 px-2 py-1 rounded border border-slate-700">Cuộn chuột: <b>Zoom</b></span>
+                <span class="bg-slate-800 px-2 py-1 rounded border border-slate-700">Kéo chuột: <b>Pan</b></span>
+            </div>
+            <button id="btnResetView" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-md transition flex items-center gap-1.5 border border-slate-700 font-medium">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                Đặt lại góc nhìn
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT LAYOUT -->
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- SIDEBAR BÊN TRÁI -->
+        <aside class="w-96 glass-panel border-r border-slate-800 p-4 flex flex-col gap-5 overflow-y-auto z-10">
+            
+            <!-- SECTION 1: CHỌN HÀM SỐ -->
+            <div>
+                <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2.5">1. Chọn Hàm số cơ bản</h2>
+                <div class="grid grid-cols-2 gap-2">
+                    <button data-fn="sin" class="btn-fn px-3 py-2 rounded-lg border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 font-semibold hover:bg-cyan-500/20 transition flex items-center justify-center gap-2 text-sm">
+                        <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span> y = sin(x)
+                    </button>
+                    <button data-fn="cos" class="btn-fn px-3 py-2 rounded-lg border border-slate-700 bg-slate-800/50 text-slate-400 font-semibold hover:border-amber-500/30 hover:text-amber-400 transition flex items-center justify-center gap-2 text-sm">
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> y = cos(x)
+                    </button>
+                    <button data-fn="tan" class="btn-fn px-3 py-2 rounded-lg border border-slate-700 bg-slate-800/50 text-slate-400 font-semibold hover:border-fuchsia-500/30 hover:text-fuchsia-400 transition flex items-center justify-center gap-2 text-sm">
+                        <span class="w-2.5 h-2.5 rounded-full bg-fuchsia-400"></span> y = tan(x)
+                    </button>
+                    <button data-fn="cot" class="btn-fn px-3 py-2 rounded-lg border border-slate-700 bg-slate-800/50 text-slate-400 font-semibold hover:border-emerald-500/30 hover:text-emerald-400 transition flex items-center justify-center gap-2 text-sm">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> y = cot(x)
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECTION 2: BIẾN ĐỔI THAM SỐ (A, B, C, D) -->
+            <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 space-y-3">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">2. Biến đổi Hàm tổng quát</h2>
+                    <button id="btnResetParams" class="text-[11px] text-indigo-400 hover:text-indigo-300 underline">Về mặc định</button>
+                </div>
+                <div id="equationDisplay" class="text-center font-mono text-sm py-1.5 bg-slate-950/80 rounded border border-slate-800 text-indigo-300 font-bold">
+                    y = 1.0·sin(1.0x + 0.0) + 0.0
+                </div>
+
+                <div class="space-y-2 text-xs">
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1">
+                            <span>Biên độ (A): <b id="valA" class="text-cyan-400 font-mono">1.0</b></span>
+                        </div>
+                        <input type="range" id="paramA" min="-3" max="3" step="0.1" value="1" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1">
+                            <span>Tần số góc (B): <b id="valB" class="text-cyan-400 font-mono">1.0</b></span>
+                        </div>
+                        <input type="range" id="paramB" min="0.2" max="4" step="0.1" value="1" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1">
+                            <span>Pha ban đầu (C): <b id="valC" class="text-cyan-400 font-mono">0.0</b></span>
+                        </div>
+                        <input type="range" id="paramC" min="-3.14" max="3.14" step="0.1" value="0" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1">
+                            <span>Tịnh tiến tung độ (D): <b id="valD" class="text-cyan-400 font-mono">0.0</b></span>
+                        </div>
+                        <input type="range" id="paramD" min="-3" max="3" step="0.1" value="0" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: CÁC TÙY CHỌN HIỂN THỊ -->
+            <div class="space-y-2 text-xs">
+                <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">3. Tùy chọn nâng cao</h2>
+                
+                <label class="flex items-center justify-between p-2 rounded bg-slate-900/40 border border-slate-800 cursor-pointer hover:bg-slate-800/40">
+                    <span class="text-slate-300">Mô phỏng Đường tròn Lượng giác</span>
+                    <input type="checkbox" id="toggleCircle" class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-indigo-500 focus:ring-0 cursor-pointer">
+                </label>
+
+                <label class="flex items-center justify-between p-2 rounded bg-slate-900/40 border border-slate-800 cursor-pointer hover:bg-slate-800/40">
+                    <span class="text-slate-300">Hiển thị đường Tiệm cận đứng</span>
+                    <input type="checkbox" id="toggleAsymptote" checked class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-indigo-500 focus:ring-0 cursor-pointer">
+                </label>
+
+                <label class="flex items-center justify-between p-2 rounded bg-slate-900/40 border border-slate-800 cursor-pointer hover:bg-slate-800/40">
+                    <span class="text-slate-300">Đánh dấu Điểm đặc biệt (Cực trị, Giao Ox)</span>
+                    <input type="checkbox" id="toggleKeyPoints" checked class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-indigo-500 focus:ring-0 cursor-pointer">
+                </label>
+            </div>
+
+            <!-- SECTION 4: CARD THÔNG TIN LÝ THUYẾT SGK -->
+            <div class="flex-1 flex flex-col">
+                <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">4. Lý thuyết SGK 11 KNTT</h2>
+                
+                <div id="theoryCard" class="bg-slate-900/90 rounded-xl p-3.5 border border-slate-800 flex-1 flex flex-col gap-2.5 text-xs">
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                        <span id="theoryTitle" class="font-bold text-cyan-400 text-sm">Hàm số y = sin(x)</span>
+                        <span id="theoryBadge" class="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-medium border border-cyan-500/30">Hàm lẻ</span>
+                    </div>
+
+                    <div class="space-y-2 text-slate-300 leading-relaxed">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <span class="text-slate-500 block text-[10px] uppercase font-semibold">Tập xác định (D):</span>
+                                <span id="theoryDomain" class="font-mono text-slate-200">D = ℝ</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500 block text-[10px] uppercase font-semibold">Tập giá trị (T):</span>
+                                <span id="theoryRange" class="font-mono text-slate-200">[-1; 1]</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-slate-500 block text-[10px] uppercase font-semibold">Chu kỳ tuần hoàn (T):</span>
+                            <span id="theoryPeriod" class="font-mono text-slate-200">T = 2π</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500 block text-[10px] uppercase font-semibold">Tính đối xứng & Đồ thị:</span>
+                            <span id="theorySymmetry" class="text-slate-300">Đối xứng qua gốc O. Đồ thị dạng sinusoid.</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500 block text-[10px] uppercase font-semibold">Tính đơn điệu:</span>
+                            <p id="theoryMonotonicity" class="mt-0.5 text-slate-300 leading-normal"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- CANVAS ĐỒ THỊ CHÍNH -->
+        <main class="flex-1 relative bg-slate-950 overflow-hidden">
+            <canvas id="graphCanvas" class="w-full h-full cursor-grab active:cursor-grabbing block"></canvas>
+            
+            <!-- PANEL CONTROLS MÔ PHỎNG ANIMATION -->
+            <div id="animControls" class="hidden absolute top-4 left-4 glass-panel p-2.5 rounded-xl border border-slate-800 flex items-center gap-3 z-10">
+                <button id="btnPlayPause" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg transition text-xs flex items-center gap-1.5 shadow-lg shadow-indigo-500/20">
+                    <svg id="iconPlay" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    <svg id="iconPause" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    <span id="txtPlay">Chạy mô phỏng</span>
+                </button>
+                <div class="text-xs font-mono text-slate-300 border-l border-slate-700 pl-3">
+                    Góc quay: <span id="animAngle" class="text-cyan-400 font-bold">0.0π</span>
+                </div>
+            </div>
+
+            <!-- TOOLTIP TỌA ĐỘ MÁY TÍNH -->
+            <div id="tooltip" class="pointer-events-none absolute hidden glass-panel px-3 py-2 rounded-lg border border-slate-700 text-xs font-mono shadow-2xl z-20">
+                <div id="tooltipText" class="text-cyan-300 font-semibold"></div>
+            </div>
+
+            <!-- WATERMARK -->
+            <div class="absolute bottom-4 right-4 pointer-events-none text-right">
+                <div class="text-xs text-slate-500 font-mono font-medium">Hệ trục Oxy chuẩn chia theo π</div>
+                <div class="text-[10px] text-slate-600">Sách giáo khoa Kết nối tri thức với cuộc sống</div>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- JAVASCRIPT CODE CORE -->
+    <script>
+        // CƠ SỞ DỮ LIỆU LÝ THUYẾT SGK KNTT
+        const TRIG_THEORY = {
+            sin: {
+                title: "Hàm số y = sin(x)",
+                color: "#22d3ee",
+                badge: "Hàm lẻ",
+                domain: "D = ℝ",
+                range: "[-1; 1]",
+                period: "T = 2π",
+                symmetry: "Đối xứng qua gốc tọa độ O. Đồ thị là đường hình sin (sinusoid).",
+                monotonicity: "• Đồng biến trên (-π/2 + k2π; π/2 + k2π)<br>• Nghịch biến trên (π/2 + k2π; 3π/2 + k2π)"
+            },
+            cos: {
+                title: "Hàm số y = cos(x)",
+                color: "#fbbf24",
+                badge: "Hàm chẵn",
+                domain: "D = ℝ",
+                range: "[-1; 1]",
+                period: "T = 2π",
+                symmetry: "Đối xứng qua trục tung Oy. Đồ thị là đường hình sin (sinusoid).",
+                monotonicity: "• Đồng biến trên (-π + k2π; k2π)<br>• Nghịch biến trên (k2π; π + k2π)"
+            },
+            tan: {
+                title: "Hàm số y = tan(x)",
+                color: "#e879f9",
+                badge: "Hàm lẻ",
+                domain: "D = ℝ \\ {π/2 + kπ, k ∈ ℤ}",
+                range: "ℝ",
+                period: "T = π",
+                symmetry: "Đối xứng qua gốc O. Có các đường tiệm cận đứng tại x = π/2 + kπ.",
+                monotonicity: "• Đồng biến trên từng khoảng (-π/2 + kπ; π/2 + kπ)<br>• Không có khoảng nghịch biến."
+            },
+            cot: {
+                title: "Hàm số y = cot(x)",
+                color: "#34d399",
+                badge: "Hàm lẻ",
+                domain: "D = ℝ \\ {kπ, k ∈ ℤ}",
+                range: "ℝ",
+                period: "T = π",
+                symmetry: "Đối xứng qua gốc O. Có các đường tiệm cận đứng tại x = kπ.",
+                monotonicity: "• Nghịch biến trên từng khoảng (kπ; π + kπ)<br>• Không có khoảng đồng biến."
+            }
+        };
+
+        // CANVAS & CANVAS CONTEXT
+        const canvas = document.getElementById('graphCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // TRẠNG THÁI ỨNG DỤNG (APP STATE)
+        let currentFn = 'sin';
+        let scale = 80; // Pixel per Math unit
+        let offsetX = 0;
+        let offsetY = 0;
+        let isDragging = false;
+        let startX, startY;
+
+        // Các tham số A, B, C, D
+        let paramA = 1.0, paramB = 1.0, paramC = 0.0, paramD = 0.0;
+
+        // Tùy chọn hiển thị
+        let showCircle = false;
+        let showAsymptotes = true;
+        let showKeyPoints = true;
+
+        // Animation state
+        let isPlaying = false;
+        let animAngle = 0; // Tương ứng góc x
+        let animReqId = null;
+
+        // Mouse hover state
+        let mousePos = null;
+
+        // KHỞI TẠO TỌA ĐỘ BAN ĐẦU
+        function initViewport() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            offsetX = canvas.width / (showCircle ? 1.6 : 2);
+            offsetY = canvas.height / 2;
+        }
+
+        // TÍNH GIÁ TRỊ HÀM SỐ SỐ HỌC
+        function calculateY(x, fn = currentFn) {
+            const input = paramB * x + paramC;
+            let baseVal = 0;
+
+            if (fn === 'sin') baseVal = Math.sin(input);
+            else if (fn === 'cos') baseVal = Math.cos(input);
+            else if (fn === 'tan') {
+                if (Math.abs(Math.cos(input)) < 1e-6) return NaN;
+                baseVal = Math.tan(input);
+            } else if (fn === 'cot') {
+                if (Math.abs(Math.sin(input)) < 1e-6) return NaN;
+                baseVal = 1 / Math.tan(input);
+            }
+
+            return paramA * baseVal + paramD;
+        }
+
+        // CHUYỂN ĐỔI TỌA ĐỘ MÀN HÌNH <-> TOÁN HỌC
+        function mathToPixel(x, y) {
+            return {
+                px: offsetX + x * scale,
+                py: offsetY - y * scale
+            };
+        }
+
+        function pixelToMath(px, py) {
+            return {
+                x: (px - offsetX) / scale,
+                y: (offsetY - py) / scale
+            };
+        }
+
+        // VẼ HỆ TRỤC OXY VỚI ĐƠN VỊ PI
+        function drawGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. LƯỚI PHỤ
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = '#1e293b';
+
+            const xStep = (Math.PI / 2) * scale;
+            let startGridX = (offsetX % xStep) - xStep;
+            for (let x = startGridX; x < canvas.width; x += xStep) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+
+            const yStep = scale;
+            let startGridY = (offsetY % yStep) - yStep;
+            for (let y = startGridY; y < canvas.height; y += yStep) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+
+            // 2. TRỤC CHÍNH OX, OY
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#64748b';
+
+            ctx.beginPath(); ctx.moveTo(0, offsetY); ctx.lineTo(canvas.width, offsetY); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(offsetX, 0); ctx.lineTo(offsetX, canvas.height); ctx.stroke();
+
+            // 3. GẮN NHÃN PI
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '12px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+
+            ctx.fillText("0", offsetX - 12, offsetY + 6);
+
+            const minK = Math.floor((-offsetX) / (Math.PI / 2 * scale)) - 1;
+            const maxK = Math.ceil((canvas.width - offsetX) / (Math.PI / 2 * scale)) + 1;
+
+            for (let k = minK; k <= maxK; k++) {
+                if (k === 0) continue;
+                const xPx = offsetX + k * (Math.PI / 2) * scale;
+
+                ctx.beginPath(); ctx.moveTo(xPx, offsetY - 4); ctx.lineTo(xPx, offsetY + 4); ctx.stroke();
+
+                let label = "";
+                if (k === 1) label = "π/2";
+                else if (k === -1) label = "-π/2";
+                else if (k === 2) label = "π";
+                else if (k === -2) label = "-π";
+                else if (k % 2 === 0) label = (k / 2) + "π";
+                else label = k + "π/2";
+
+                ctx.fillText(label, xPx, offsetY + 8);
+            }
+
+            // GẮN NHÃN Y
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            const minK_y = Math.floor((offsetY - canvas.height) / scale) - 1;
+            const maxK_y = Math.ceil(offsetY / scale) + 1;
+
+            for (let k = minK_y; k <= maxK_y; k++) {
+                if (k === 0) continue;
+                const yPx = offsetY - k * scale;
+                ctx.beginPath(); ctx.moveTo(offsetX - 4, yPx); ctx.lineTo(offsetX + 4, yPx); ctx.stroke();
+                ctx.fillText(k.toString(), offsetX - 8, yPx);
+            }
+        }
+
+        // VẼ ĐỒ THỊ HÀM SỐ & TIỆM CẬN
+        function drawGraph() {
+            const color = TRIG_THEORY[currentFn].color;
+
+            // 1. VẼ TIỆM CẬN ĐỨNG (CHO TAN & COT)
+            if (showAsymptotes && (currentFn === 'tan' || currentFn === 'cot')) {
+                ctx.lineWidth = 1;
+                ctx.setLineDash([4, 4]);
+                ctx.strokeStyle = 'rgba(244, 63, 94, 0.6)'; // red-500
+
+                const minX = pixelToMath(0, 0).x;
+                const maxX = pixelToMath(canvas.width, 0).x;
+
+                const step = Math.PI / Math.abs(paramB);
+                let startK = Math.floor((minX * paramB + paramC) / Math.PI) - 2;
+                let endK = Math.ceil((maxX * paramB + paramC) / Math.PI) + 2;
+
+                for (let k = startK; k <= endK; k++) {
+                    let asymptoteX = 0;
+                    if (currentFn === 'tan') {
+                        asymptoteX = (Math.PI / 2 + k * Math.PI - paramC) / paramB;
+                    } else {
+                        asymptoteX = (k * Math.PI - paramC) / paramB;
+                    }
+
+                    const { px } = mathToPixel(asymptoteX, 0);
+                    if (px >= 0 && px <= canvas.width) {
+                        ctx.beginPath();
+                        ctx.moveTo(px, 0);
+                        ctx.lineTo(px, canvas.height);
+                        ctx.stroke();
+                    }
+                }
+                ctx.setLineDash([]); // Reset line dash
+            }
+
+            // 2. VẼ ĐƯỜNG ĐỒ THỊ CHÍNH
+            ctx.lineWidth = 2.5;
+            ctx.strokeStyle = color;
+            ctx.beginPath();
+
+            let isDrawing = false;
+            const stepPx = 2; // Bước nhảy pixel để vẽ mượt
+
+            for (let px = 0; px <= canvas.width; px += stepPx) {
+                const mathX = pixelToMath(px, 0).x;
+                const mathY = calculateY(mathX);
+
+                if (isNaN(mathY) || Math.abs(mathY) > 50) {
+                    isDrawing = false;
+                    continue;
+                }
+
+                const { py } = mathToPixel(mathX, mathY);
+
+                if (!isDrawing) {
+                    ctx.moveTo(px, py);
+                    isDrawing = true;
+                } else {
+                    ctx.lineTo(px, py);
+                }
+            }
+            ctx.stroke();
+
+            // 3. HIGHLIGHT CÁC ĐIỂM ĐẶC BIỆT (CỰC TRỊ, GIAO OX)
+            if (showKeyPoints) {
+                const minX = pixelToMath(0, 0).x;
+                const maxX = pixelToMath(canvas.width, 0).x;
+                const step = 0.02;
+
+                for (let x = minX; x <= maxX; x += step) {
+                    const y = calculateY(x);
+                    const yPrev = calculateY(x - step);
+                    const yNext = calculateY(x + step);
+
+                    // Giao điểm Ox
+                    if (Math.abs(y) < 0.02) {
+                        const { px, py } = mathToPixel(x, y);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.beginPath(); ctx.arc(px, py, 3, 0, Math.PI * 2); ctx.fill();
+                    }
+                    // Cực đại / Cực tiểu (cho sin và cos)
+                    else if ((currentFn === 'sin' || currentFn === 'cos') && y > yPrev && y > yNext && Math.abs(y - (paramD + Math.abs(paramA))) < 0.01) {
+                        const { px, py } = mathToPixel(x, y);
+                        ctx.fillStyle = color;
+                        ctx.beginPath(); ctx.arc(px, py, 4, 0, Math.PI * 2); ctx.fill();
+                    }
+                }
+            }
+        }
+
+        // VẼ MÔ PHỎNG ĐƯỜNG TRÒN LƯỢNG GIÁC
+        function drawTrigCircle() {
+            if (!showCircle) return;
+
+            const circleR = 1.2 * scale; // Bán kính đường tròn
+            const centerMathX = pixelToMath(100 + circleR, 0).x;
+            const circleCenter = { px: 140 + circleR, py: offsetY };
+
+            // Trục đường tròn
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = '#475569';
+            ctx.beginPath(); ctx.arc(circleCenter.px, circleCenter.py, circleR, 0, Math.PI * 2); ctx.stroke();
+
+            // Tia xoay theo animAngle
+            const currentX = animAngle;
+            const angleVal = paramB * currentX + paramC;
+            const targetY = calculateY(currentX);
+
+            const pointOnCircle = {
+                px: circleCenter.px + circleR * Math.cos(angleVal),
+                py: circleCenter.py - circleR * Math.sin(angleVal)
+            };
+
+            // Vẽ bán kính quay
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#f43f5e';
+            ctx.beginPath(); ctx.moveTo(circleCenter.px, circleCenter.py); ctx.lineTo(pointOnCircle.px, pointOnCircle.py); ctx.stroke();
+            ctx.fillStyle = '#f43f5e';
+            ctx.beginPath(); ctx.arc(pointOnCircle.px, pointOnCircle.py, 5, 0, Math.PI * 2); ctx.fill();
+
+            // Điểm trên đồ thị tương ứng
+            const graphPt = mathToPixel(currentX, targetY);
+
+            // Đường dóng kết nối từ Đường tròn -> Đồ thị
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([3, 3]);
+            ctx.strokeStyle = '#38bdf8';
+            ctx.beginPath(); ctx.moveTo(pointOnCircle.px, pointOnCircle.py); ctx.lineTo(graphPt.px, graphPt.py); ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Điểm chạy trên đồ thị
+            ctx.fillStyle = '#38bdf8';
+            ctx.beginPath(); ctx.arc(graphPt.px, graphPt.py, 6, 0, Math.PI * 2); ctx.fill();
+        }
+
+        // XỬ LÝ HOVER TƯƠNG TÁC TỌA ĐỘ
+        function drawHoverTooltip() {
+            if (!mousePos) return;
+
+            const mathPt = pixelToMath(mousePos.x, mousePos.y);
+            const mathY = calculateY(mathPt.x);
+
+            if (isNaN(mathY) || Math.abs(mathY) > 20) return;
+
+            const pt = mathToPixel(mathPt.x, mathY);
+
+            // Chỉ hiện tooltip nếu rê chuột gần đường đồ thị
+            if (Math.abs(mousePos.y - pt.py) < 30) {
+                ctx.fillStyle = '#38bdf8';
+                ctx.beginPath(); ctx.arc(pt.px, pt.py, 5, 0, Math.PI * 2); ctx.fill();
+
+                // Format góc Pi
+                const piRatio = (mathPt.x / Math.PI).toFixed(2);
+                const tooltip = document.getElementById('tooltip');
+                const tooltipText = document.getElementById('tooltipText');
+
+                tooltipText.innerHTML = `x = ${piRatio}π<br>y = ${mathY.toFixed(2)}`;
+                tooltip.style.left = (pt.px + 15) + 'px';
+                tooltip.style.top = (pt.py - 35) + 'px';
+                tooltip.classList.remove('hidden');
+            } else {
+                document.getElementById('tooltip').classList.add('hidden');
+            }
+        }
+
+        // RENDER LOOP CHÍNH
+        function render() {
+            drawGrid();
+            drawGraph();
+            drawTrigCircle();
+            drawHoverTooltip();
+        }
+
+        // ANIMATION LOOP
+        function animate() {
+            if (isPlaying) {
+                animAngle += 0.02;
+                if (animAngle > 4 * Math.PI) animAngle = -2 * Math.PI;
+
+                document.getElementById('animAngle').textContent = (animAngle / Math.PI).toFixed(2) + 'π';
+                render();
+                animReqId = requestAnimationFrame(animate);
+            }
+        }
+
+        // CẬP NHẬT FORMULA DISPLAY
+        function updateEquationDisplay() {
+            const aStr = paramA.toFixed(1);
+            const bStr = paramB.toFixed(1);
+            const cStr = paramC >= 0 ? `+ ${paramC.toFixed(1)}` : `- ${Math.abs(paramC).toFixed(1)}`;
+            const dStr = paramD >= 0 ? `+ ${paramD.toFixed(1)}` : `- ${Math.abs(paramD).toFixed(1)}`;
+
+            document.getElementById('equationDisplay').textContent = `y = ${aStr}·${currentFn}(${bStr}x ${cStr}) ${dStr}`;
+        }
+
+        // UPDATE CARD LÝ THUYẾT
+        function updateTheoryCard(fnKey) {
+            const data = TRIG_THEORY[fnKey];
+            document.getElementById('theoryTitle').textContent = data.title;
+            document.getElementById('theoryTitle').style.color = data.color;
+            
+            const badge = document.getElementById('theoryBadge');
+            badge.textContent = data.badge;
+            badge.style.borderColor = data.color + '50';
+            badge.style.backgroundColor = data.color + '20';
+            badge.style.color = data.color;
+
+            document.getElementById('theoryDomain').textContent = data.domain;
+            document.getElementById('theoryRange').textContent = data.range;
+            document.getElementById('theoryPeriod').textContent = data.period;
+            document.getElementById('theorySymmetry').textContent = data.symmetry;
+            document.getElementById('theoryMonotonicity').innerHTML = data.monotonicity;
+        }
+
+        // EVENT LISTENERS CHUỘT
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX - offsetX;
+            startY = e.clientY - offsetY;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mousePos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+
+            if (isDragging) {
+                offsetX = e.clientX - startX;
+                offsetY = e.clientY - startY;
+            }
+            render();
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        canvas.addEventListener('mouseleave', () => {
+            mousePos = null;
+            document.getElementById('tooltip').classList.add('hidden');
+            render();
+        });
+
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+            const newScale = scale * zoomFactor;
+
+            if (newScale > 20 && newScale < 400) {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                offsetX = mouseX - (mouseX - offsetX) * zoomFactor;
+                offsetY = mouseY - (mouseY - offsetY) * zoomFactor;
+                scale = newScale;
+                render();
+            }
+        }, { passive: false });
+
+        // EVENT BUTTONS CHỌN HÀM
+        document.querySelectorAll('.btn-fn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.btn-fn').forEach(b => {
+                    b.className = "btn-fn px-3 py-2 rounded-lg border border-slate-700 bg-slate-800/50 text-slate-400 font-semibold hover:border-slate-500 transition flex items-center justify-center gap-2 text-sm";
+                });
+
+                const fnKey = btn.dataset.fn;
+                currentFn = fnKey;
+
+                const activeColor = TRIG_THEORY[fnKey].color;
+                btn.className = `btn-fn px-3 py-2 rounded-lg border bg-slate-800 text-white font-semibold transition flex items-center justify-center gap-2 text-sm`;
+                btn.style.borderColor = activeColor;
+                btn.style.color = activeColor;
+
+                updateEquationDisplay();
+                updateTheoryCard(fnKey);
+                render();
+            });
+        });
+
+        // EVENT SLIDERS THAM SỐ A, B, C, D
+        const setupSlider = (id, setter, valId) => {
+            document.getElementById(id).addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value);
+                setter(val);
+                document.getElementById(valId).textContent = val.toFixed(1);
+                updateEquationDisplay();
+                render();
+            });
+        };
+
+        setupSlider('paramA', v => paramA = v, 'valA');
+        setupSlider('paramB', v => paramB = v, 'valB');
+        setupSlider('paramC', v => paramC = v, 'valC');
+        setupSlider('paramD', v => paramD = v, 'valD');
+
+        // RESET PARAMS
+        document.getElementById('btnResetParams').addEventListener('click', () => {
+            paramA = 1.0; paramB = 1.0; paramC = 0.0; paramD = 0.0;
+            document.getElementById('paramA').value = 1; document.getElementById('valA').textContent = '1.0';
+            document.getElementById('paramB').value = 1; document.getElementById('valB').textContent = '1.0';
+            document.getElementById('paramC').value = 0; document.getElementById('valC').textContent = '0.0';
+            document.getElementById('paramD').value = 0; document.getElementById('valD').textContent = '0.0';
+            updateEquationDisplay();
+            render();
+        });
+
+        // TOGGLES
+        document.getElementById('toggleCircle').addEventListener('change', (e) => {
+            showCircle = e.target.checked;
+            document.getElementById('animControls').classList.toggle('hidden', !showCircle);
+            initViewport();
+            render();
+        });
+
+        document.getElementById('toggleAsymptote').addEventListener('change', (e) => {
+            showAsymptotes = e.target.checked;
+            render();
+        });
+
+        document.getElementById('toggleKeyPoints').addEventListener('change', (e) => {
+            showKeyPoints = e.target.checked;
+            render();
+        });
+
+        // PLAY / PAUSE ANIMATION
+        document.getElementById('btnPlayPause').addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            document.getElementById('iconPlay').classList.toggle('hidden', isPlaying);
+            document.getElementById('iconPause').classList.toggle('hidden', !isPlaying);
+            document.getElementById('txtPlay').textContent = isPlaying ? "Tạm dừng" : "Chạy mô phỏng";
+
+            if (isPlaying) animate();
+            else cancelAnimationFrame(animReqId);
+        });
+
+        // RESET VIEW
+        document.getElementById('btnResetView').addEventListener('click', () => {
+            scale = 80;
+            initViewport();
+            render();
+        });
+
+        // RESIZE WINDOW
+        window.addEventListener('resize', () => {
+            initViewport();
+            render();
+        });
+
+        // INIT APPLICATION
+        initViewport();
+        updateEquationDisplay();
+        updateTheoryCard('sin');
+        render();
+    </script>
+</body>
+</html>
